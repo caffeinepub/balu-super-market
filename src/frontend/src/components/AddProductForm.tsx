@@ -16,10 +16,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Plus, X } from "lucide-react";
+import { ImageIcon, Loader2, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAddProduct, useProducts } from "../hooks/useQueries";
+import { setProductImage } from "../utils/productImages";
 
 const CATEGORIES = [
   "Grocery",
@@ -35,6 +36,8 @@ export function AddProductForm() {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [imagePreviewError, setImagePreviewError] = useState(false);
 
   const addProduct = useAddProduct();
   const { data: products } = useProducts();
@@ -65,21 +68,30 @@ export function AddProductForm() {
       existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1,
     );
 
+    const trimmedName = name.trim();
+    const trimmedImageUrl = imageUrl.trim();
+
     addProduct.mutate(
       {
         id: newId,
-        name: name.trim(),
+        name: trimmedName,
         category,
         price: BigInt(parsedPrice),
         description: description.trim(),
       },
       {
         onSuccess: () => {
-          toast.success(`"${name.trim()}" added successfully!`);
+          // Save custom image URL if provided
+          if (trimmedImageUrl) {
+            setProductImage(trimmedName, trimmedImageUrl);
+          }
+          toast.success(`"${trimmedName}" added successfully!`);
           setName("");
           setCategory("");
           setPrice("");
           setDescription("");
+          setImageUrl("");
+          setImagePreviewError(false);
           setOpen(false);
         },
         onError: () => {
@@ -161,6 +173,41 @@ export function AddProductForm() {
               rows={3}
               required
             />
+          </div>
+
+          <div className="grid gap-1.5">
+            <Label htmlFor="prod-image" className="flex items-center gap-1.5">
+              <ImageIcon className="h-3.5 w-3.5 text-muted-foreground" />
+              Product Image URL
+              <span className="text-xs text-muted-foreground font-normal">
+                (optional)
+              </span>
+            </Label>
+            <Input
+              id="prod-image"
+              type="url"
+              placeholder="https://example.com/image.jpg"
+              value={imageUrl}
+              onChange={(e) => {
+                setImageUrl(e.target.value);
+                setImagePreviewError(false);
+              }}
+            />
+            {imageUrl && !imagePreviewError && (
+              <div className="relative w-full h-28 rounded-lg overflow-hidden border border-border bg-muted">
+                <img
+                  src={imageUrl}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                  onError={() => setImagePreviewError(true)}
+                />
+              </div>
+            )}
+            {imageUrl && imagePreviewError && (
+              <p className="text-xs text-destructive">
+                Could not load image from that URL. Please check the link.
+              </p>
+            )}
           </div>
 
           <div className="flex gap-3 pt-1">

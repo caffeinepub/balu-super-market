@@ -99,6 +99,11 @@ actor {
     addSeedProduct(16, "Watermelon", "Fresh Fruits", 25, "Per kg", true);
     addSeedProduct(17, "Papaya", "Fresh Fruits", 50, "Per kg", true);
     addSeedProduct(18, "Pomegranate", "Fresh Fruits", 160, "Per kg", true);
+    addSeedProduct(41, "Guava", "Fresh Fruits", 60, "Per kg", true);
+    addSeedProduct(42, "Pineapple", "Fresh Fruits", 70, "Per piece", true);
+    addSeedProduct(43, "Coconut", "Fresh Fruits", 30, "Per piece", true);
+    addSeedProduct(44, "Strawberry", "Fresh Fruits", 200, "Per box", true);
+    addSeedProduct(45, "Kiwi", "Fresh Fruits", 150, "Per kg", true);
 
     // Fresh Juice
     addSeedProduct(19, "Orange Juice", "Fresh Juice", 50, "Per glass", true);
@@ -107,6 +112,10 @@ actor {
     addSeedProduct(22, "Lemon Juice", "Fresh Juice", 30, "Per glass", true);
     addSeedProduct(23, "Mixed Fruit Juice", "Fresh Juice", 70, "Per glass", true);
     addSeedProduct(24, "Sugarcane Juice", "Fresh Juice", 25, "Per glass", true);
+    addSeedProduct(46, "Pineapple Juice", "Fresh Juice", 55, "Per glass", true);
+    addSeedProduct(47, "Watermelon Juice", "Fresh Juice", 40, "Per glass", true);
+    addSeedProduct(48, "Coconut Water", "Fresh Juice", 35, "Per glass", true);
+    addSeedProduct(49, "Grape Juice", "Fresh Juice", 60, "Per glass", true);
 
     // Hot Items
     addSeedProduct(25, "Samosa", "Hot Items", 15, "Per piece", true);
@@ -117,6 +126,11 @@ actor {
     addSeedProduct(30, "Coffee", "Hot Items", 20, "Per cup", true);
     addSeedProduct(31, "Poha", "Hot Items", 40, "Per plate", true);
     addSeedProduct(32, "Upma", "Hot Items", 40, "Per plate", true);
+    addSeedProduct(50, "Idli", "Hot Items", 30, "Per plate", true);
+    addSeedProduct(51, "Dosa", "Hot Items", 50, "Per plate", true);
+    addSeedProduct(52, "Masala Chai", "Hot Items", 20, "Per cup", true);
+    addSeedProduct(53, "Bread (Loaf)", "Hot Items", 35, "Per loaf", true);
+    addSeedProduct(54, "Biscuits", "Hot Items", 20, "Per pack", true);
 
     // Cold Items
     addSeedProduct(33, "Vanilla Ice Cream", "Cold Items", 30, "Per cup", true);
@@ -127,6 +141,20 @@ actor {
     addSeedProduct(38, "Coca Cola", "Cold Items", 40, "Per bottle", true);
     addSeedProduct(39, "Sprite", "Cold Items", 40, "Per bottle", true);
     addSeedProduct(40, "Cold Water", "Cold Items", 20, "Per bottle", true);
+    addSeedProduct(55, "Mango Ice Cream", "Cold Items", 40, "Per cup", true);
+    addSeedProduct(56, "Strawberry Ice Cream", "Cold Items", 40, "Per cup", true);
+    addSeedProduct(57, "Milkshake", "Cold Items", 80, "Per glass", true);
+    addSeedProduct(58, "Yogurt", "Cold Items", 30, "Per cup", true);
+    addSeedProduct(59, "Fruit Salad", "Cold Items", 60, "Per bowl", true);
+
+    // More Grocery (cutovan)
+    addSeedProduct(60, "Milk", "Grocery", 55, "Per litre", true);
+    addSeedProduct(61, "Eggs", "Grocery", 80, "Per dozen", true);
+    addSeedProduct(62, "Butter", "Grocery", 55, "Per 100g", true);
+    addSeedProduct(63, "Honey", "Grocery", 150, "Per bottle", true);
+    addSeedProduct(64, "Noodles", "Grocery", 25, "Per pack", true);
+    addSeedProduct(65, "Chips", "Grocery", 20, "Per pack", true);
+    addSeedProduct(66, "Jam", "Grocery", 90, "Per bottle", true);
   };
 
   func addSeedProduct(id : Nat, name : Text, category : Text, price : Nat, description : Text, available : Bool) {
