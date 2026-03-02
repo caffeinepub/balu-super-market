@@ -1,6 +1,14 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/sonner";
 import {
@@ -16,7 +24,7 @@ import {
   Star,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AddProductForm } from "./components/AddProductForm";
 import { CategoryNav } from "./components/CategoryNav";
@@ -24,7 +32,7 @@ import { ProductCard } from "./components/ProductCard";
 import { ProductGridSkeleton } from "./components/ProductSkeleton";
 import { useActor } from "./hooks/useActor";
 import { useInternetIdentity } from "./hooks/useInternetIdentity";
-import { useInit, useIsAdmin, useProducts } from "./hooks/useQueries";
+import { useInit, useProducts } from "./hooks/useQueries";
 
 const STORE_INFO = {
   name: "BALU SUPER MARKET",
@@ -40,15 +48,19 @@ const STORE_INFO = {
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15663.0!2d79.6!3d11.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDI0JzAwLjAiTiA3OcKwMzYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1700000000000",
 };
 
+const STAFF_PASSWORD = "balu2024";
+
 export default function App() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [adminMode, setAdminMode] = useState(false);
+  const [passwordVerified, setPasswordVerified] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const { clear } = useInternetIdentity();
+  useActor();
 
-  const { login, clear, isLoggingIn, identity, isInitializing } =
-    useInternetIdentity();
-  const { isFetching: actorFetching } = useActor();
-
-  // Initialize backend
+  // Init is handled statically
   useInit();
 
   const {
@@ -56,14 +68,8 @@ export default function App() {
     isLoading: productsLoading,
     isError: productsError,
   } = useProducts();
-  const { data: isAdmin } = useIsAdmin();
 
-  // Sync admin mode off if user is no longer admin
-  useEffect(() => {
-    if (!isAdmin) setAdminMode(false);
-  }, [isAdmin]);
-
-  const isLoggedIn = !!identity;
+  const canAccessAdmin = passwordVerified;
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -80,19 +86,25 @@ export default function App() {
     return counts;
   }, [products]);
 
-  function handleAdminToggle() {
-    if (!isLoggedIn) {
-      toast.info("Please log in first to access admin panel");
+  function handlePasswordSubmit() {
+    if (passwordInput !== STAFF_PASSWORD) {
+      setPasswordError(true);
       return;
     }
-    if (!isAdmin) {
-      toast.error("You don't have admin privileges");
-      return;
-    }
-    setAdminMode((prev) => !prev);
+    setPasswordError(false);
+    setPasswordVerified(true);
+    setAdminMode(true);
+    setShowLoginDialog(false);
+    setPasswordInput("");
+    toast.success("Logged in as staff! Admin Panel is now active.");
   }
 
-  const isActorLoading = actorFetching || isInitializing;
+  function handleLogout() {
+    clear();
+    setPasswordVerified(false);
+    setAdminMode(false);
+    toast.success("Logged out successfully");
+  }
 
   return (
     <div className="min-h-screen bg-background market-texture font-body">
@@ -108,30 +120,23 @@ export default function App() {
         <div className="relative container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Top bar: Login/Admin */}
           <div className="flex justify-end gap-3 mb-6">
-            {isActorLoading ? (
-              <div className="h-9 w-28 rounded-full bg-white/20 animate-pulse" />
-            ) : isLoggedIn ? (
+            {canAccessAdmin ? (
               <div className="flex items-center gap-2">
-                {isAdmin && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAdminToggle}
-                    className={`border-white/30 text-white hover:bg-white/10 gap-1.5 font-semibold ${
-                      adminMode ? "bg-white/20" : "bg-transparent"
-                    }`}
-                  >
-                    <ShieldCheck className="h-4 w-4" />
-                    {adminMode ? "Exit Admin" : "Admin Panel"}
-                  </Button>
-                )}
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    clear();
-                    toast.success("Logged out successfully");
-                  }}
+                  onClick={() => setAdminMode((prev) => !prev)}
+                  className={`border-white/30 text-white hover:bg-white/10 gap-1.5 font-semibold ${
+                    adminMode ? "bg-white/20" : "bg-transparent"
+                  }`}
+                >
+                  <ShieldCheck className="h-4 w-4" />
+                  {adminMode ? "Exit Admin" : "Admin Panel"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
                   className="border-white/30 text-white hover:bg-white/10 gap-1.5"
                 >
                   <LogOut className="h-4 w-4" />
@@ -142,12 +147,15 @@ export default function App() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={login}
-                disabled={isLoggingIn}
+                onClick={() => {
+                  setPasswordInput("");
+                  setPasswordError(false);
+                  setShowLoginDialog(true);
+                }}
                 className="border-white/30 text-white hover:bg-white/10 gap-1.5"
               >
                 <LogIn className="h-4 w-4" />
-                {isLoggingIn ? "Logging in..." : "Staff Login"}
+                Staff Login
               </Button>
             )}
           </div>
@@ -273,6 +281,7 @@ export default function App() {
                 </span>
               )}
             </h2>
+            {adminMode && <AddProductForm />}
           </div>
 
           {productsLoading ? (
@@ -429,6 +438,67 @@ export default function App() {
           </motion.div>
         </div>
       </section>
+
+      {/* ─── STAFF LOGIN DIALOG ─── */}
+      <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-lg font-bold">
+              <ShieldCheck className="h-5 w-5 text-market-green" />
+              Staff Login
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="staff-password">Staff Password</Label>
+              <Input
+                id="staff-password"
+                type="password"
+                placeholder="Enter staff password"
+                value={passwordInput}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value);
+                  setPasswordError(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handlePasswordSubmit();
+                }}
+                className={
+                  passwordError
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }
+                autoFocus
+              />
+              {passwordError && (
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  Incorrect password. Please try again.
+                </p>
+              )}
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowLoginDialog(false);
+                setPasswordInput("");
+                setPasswordError(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePasswordSubmit}
+              disabled={!passwordInput}
+              className="bg-market-green hover:bg-market-green/90 text-white"
+            >
+              Login
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* ─── FOOTER ─── */}
       <footer className="bg-foreground text-background py-8">

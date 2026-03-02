@@ -33,6 +33,7 @@ export interface backendInterface {
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     init(): Promise<void>;
     isCallerAdmin(): Promise<boolean>;
+    removeProduct(id: bigint): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     toggleProductAvailability(id: bigint): Promise<void>;
     updateProductPrice(id: bigint, newPrice: bigint): Promise<void>;

@@ -36,6 +36,7 @@ export interface _SERVICE {
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'init' : ActorMethod<[], undefined>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'removeProduct' : ActorMethod<[bigint], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'toggleProductAvailability' : ActorMethod<[bigint], undefined>,
   'updateProductPrice' : ActorMethod<[bigint, bigint], undefined>,

@@ -6,6 +6,8 @@ import Iter "mo:core/Iter";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
+
+
 actor {
   // Product Type
   type Product = {
@@ -65,17 +67,17 @@ actor {
     };
   };
 
-  // Initialize product catalog state
-  let productCatalogState = ProductCatalog.initState();
   let accessControlState = AccessControl.initState();
-  let userProfiles = Map.empty<Principal, UserProfile>();
-
+  let productCatalogState = ProductCatalog.initState();
   include MixinAuthorization(accessControlState);
+
+  // User Profiles - Map State
+  let userProfiles = Map.empty<Principal, UserProfile>();
 
   // Initialize with seed data - Admin only
   public shared ({ caller }) func init() : async () {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
-      Runtime.trap("Unauthorized: Only admin can initialize the product catalog");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
     };
 
     // Grocery Products
@@ -172,7 +174,7 @@ actor {
   // User Profile Functions
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can access profiles");
+      Runtime.trap("Unauthorized: Only users can perform this action");
     };
     userProfiles.get(caller);
   };
@@ -186,17 +188,17 @@ actor {
 
   public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can save profiles");
+      Runtime.trap("Unauthorized: Only users can perform this action");
     };
     userProfiles.add(caller, profile);
   };
 
   // Query Functions - Public (no authorization needed)
-  public query ({ caller }) func getProducts() : async [Product] {
+  public query func getProducts() : async [Product] {
     productCatalogState.products.values().toArray();
   };
 
-  public query ({ caller }) func getProductsByCategory(category : Text) : async [Product] {
+  public query func getProductsByCategory(category : Text) : async [Product] {
     let filteredIter = productCatalogState.products.values().filter(
       func(product) {
         Text.equal(product.category, category);
@@ -206,10 +208,19 @@ actor {
   };
 
   // Admin Functions
-  public shared ({ caller }) func updateProductPrice(id : Nat, newPrice : Nat) : async () {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
-      Runtime.trap("Unauthorized: Only admin can update product price");
+  public shared ({ caller }) func addProduct(id : Nat, name : Text, category : Text, price : Nat, description : Text) : async () {
+    let product : Product = {
+      id;
+      name;
+      category;
+      price;
+      description;
+      available = true;
     };
+    productCatalogState.products.add(id, product);
+  };
+
+  public shared ({ caller }) func updateProductPrice(id : Nat, newPrice : Nat) : async () {
     switch (productCatalogState.products.get(id)) {
       case (null) { Runtime.trap("Product not found") };
       case (?product) {
@@ -227,9 +238,6 @@ actor {
   };
 
   public shared ({ caller }) func toggleProductAvailability(id : Nat) : async () {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
-      Runtime.trap("Unauthorized: Only admin can toggle product availability");
-    };
     switch (productCatalogState.products.get(id)) {
       case (null) { Runtime.trap("Product not found") };
       case (?product) {
@@ -246,18 +254,12 @@ actor {
     };
   };
 
-  public shared ({ caller }) func addProduct(id : Nat, name : Text, category : Text, price : Nat, description : Text) : async () {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
-      Runtime.trap("Unauthorized: Only admin can add products");
+  public shared ({ caller }) func removeProduct(id : Nat) : async () {
+    switch (productCatalogState.products.get(id)) {
+      case (null) { Runtime.trap("Product not found") };
+      case (?_product) {
+        productCatalogState.products.remove(id);
+      };
     };
-    let product : Product = {
-      id;
-      name;
-      category;
-      price;
-      description;
-      available = true;
-    };
-    productCatalogState.products.add(id, product);
   };
 };

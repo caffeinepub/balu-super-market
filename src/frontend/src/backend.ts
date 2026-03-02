@@ -116,6 +116,7 @@ export interface backendInterface {
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     init(): Promise<void>;
     isCallerAdmin(): Promise<boolean>;
+    removeProduct(id: bigint): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     toggleProductAvailability(id: bigint): Promise<void>;
     updateProductPrice(id: bigint, newPrice: bigint): Promise<void>;
@@ -260,6 +261,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.isCallerAdmin();
+            return result;
+        }
+    }
+    async removeProduct(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.removeProduct(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.removeProduct(arg0);
             return result;
         }
     }

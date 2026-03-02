@@ -8,6 +8,7 @@ import {
   Loader2,
   Pencil,
   ShoppingBag,
+  Trash2,
   X,
 } from "lucide-react";
 import { motion } from "motion/react";
@@ -15,6 +16,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { Product } from "../backend.d";
 import {
+  useRemoveProduct,
   useToggleProductAvailability,
   useUpdateProductPrice,
 } from "../hooks/useQueries";
@@ -30,140 +32,238 @@ const CATEGORY_ICONS: Record<string, string> = {
 
 const PRODUCT_IMAGES: Record<string, string> = {
   // ── Grocery ──────────────────────────────────────────────────────────────
-  Rice: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80",
-  "Wheat Flour":
-    "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80",
-  Sugar: "https://images.unsplash.com/photo-1559181567-c3190ca9be46?w=400&q=80",
-  Salt: "https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=400&q=80",
-  "Cooking Oil":
-    "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80",
-  "Toor Dal":
-    "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=400&q=80",
-  "Turmeric Powder":
-    "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=400&q=80",
-  "Red Chilli Powder":
-    "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=400&q=80",
-  "Mustard Seeds":
-    "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&q=80",
-  "Basmati Rice":
+  "Basmati Rice (5 kg)":
     "https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400&q=80",
-  Milk: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80",
-  Eggs: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&q=80",
-  Butter:
+  "Toor Dal (1 kg)":
+    "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=400&q=80",
+  "Sunflower Oil (1 L)":
+    "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80",
+  "Whole Wheat Atta (5 kg)":
+    "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80",
+  "Sugar (1 kg)":
+    "https://images.unsplash.com/photo-1559181567-c3190ca9be46?w=400&q=80",
+  "Salt (1 kg)":
+    "https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=400&q=80",
+  "Chilli Powder (200g)":
+    "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=400&q=80",
+  "Turmeric Powder (100g)":
+    "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=400&q=80",
+  "Biscuits Marie (3 pack)":
+    "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400&q=80",
+  "Bread (Large Loaf)":
+    "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80",
+  "Butter (500g)":
     "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400&q=80",
-  Honey:
+  "Eggs (12 pack)":
+    "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&q=80",
+  "Moong Dal (500g)":
+    "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
+  "Chana Dal (1 kg)":
+    "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400&q=80",
+  "Urad Dal (500g)":
+    "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80",
+  "Mustard Seeds (100g)":
+    "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&q=80",
+  "Cumin Seeds (100g)":
+    "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&q=80",
+  "Coriander Powder (200g)":
+    "https://images.unsplash.com/photo-1637073849667-49bcdf26c0f8?w=400&q=80",
+  "Garam Masala (100g)":
+    "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&q=80",
+  "Coconut Oil (500ml)":
+    "https://images.unsplash.com/photo-1616791151652-c9a2b7e6c0f3?w=400&q=80",
+  "Ghee (500ml)":
+    "https://images.unsplash.com/photo-1631452180775-9c9cdedf2394?w=400&q=80",
+  "Honey (250g)":
     "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=400&q=80",
-  Noodles:
+  "Milk (1 L)":
+    "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80",
+  "Maggi Noodles (8 pack)":
     "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&q=80",
-  Chips:
-    "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80",
-  Jam: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400&q=80",
-  Cheese:
-    "https://images.unsplash.com/photo-1552767059-ce182ead6c1b?w=400&q=80",
-  Pasta: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=400&q=80",
-  "Tomato Sauce":
+  "Tomato Ketchup (500g)":
     "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&q=80",
+  "Soya Sauce (200ml)":
+    "https://images.unsplash.com/photo-1617731826-83a4fbab63b8?w=400&q=80",
+  "Pasta (500g)":
+    "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=400&q=80",
+  "Oats (500g)":
+    "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f?w=400&q=80",
+  "Cornflakes (500g)":
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
+  "Green Tea (25 bags)":
+    "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80",
+  "Almonds (250g)":
+    "https://images.unsplash.com/photo-1574226516831-e1dff420e562?w=400&q=80",
+  "Cashews (250g)":
+    "https://images.unsplash.com/photo-1571680322279-a226e6a4cc2a?w=400&q=80",
+  "Raisins (200g)":
+    "https://images.unsplash.com/photo-1597733153203-a54d0fbc47de?w=400&q=80",
+  "Groundnut Oil (1 L)":
+    "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80",
+  "Idli Rice (5 kg)":
+    "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80",
+  "Vermicelli (200g)":
+    "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=400&q=80",
+  "Poha (500g)":
+    "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=400&q=80",
 
   // ── Fresh Fruits ─────────────────────────────────────────────────────────
-  Apple:
-    "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&q=80",
-  Banana:
-    "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&q=80",
-  Mango:
+  "Alphonso Mangoes (1 kg)":
     "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=400&q=80",
-  Orange:
-    "https://images.unsplash.com/photo-1547514701-42782101795e?w=400&q=80",
-  Grapes:
+  "Bananas (1 dozen)":
+    "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&q=80",
+  "Apples (1 kg)":
+    "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&q=80",
+  "Grapes (500g)":
     "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=400&q=80",
-  Watermelon:
+  "Watermelon (whole)":
     "https://images.unsplash.com/photo-1563114773-84221bd62daa?w=400&q=80",
-  Papaya:
-    "https://images.unsplash.com/photo-1526318896980-cf78c088247c?w=400&q=80",
-  Pomegranate:
+  "Pomegranate (2 pcs)":
     "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=400&q=80",
-  Guava:
-    "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=400&q=80",
-  Pineapple:
+  "Papaya (1 pc)":
+    "https://images.unsplash.com/photo-1526318896980-cf78c088247c?w=400&q=80",
+  "Pineapple (1 pc)":
     "https://images.unsplash.com/photo-1587883012610-e3df17d41270?w=400&q=80",
-  Coconut:
-    "https://images.unsplash.com/photo-1580984969071-a8da5656c2fb?w=400&q=80",
-  Strawberry:
+  "Guava (500g)":
+    "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=400&q=80",
+  "Oranges (1 kg)":
+    "https://images.unsplash.com/photo-1547514701-42782101795e?w=400&q=80",
+  "Strawberries (250g)":
     "https://images.unsplash.com/photo-1543528176-61b239494933?w=400&q=80",
-  Kiwi: "https://images.unsplash.com/photo-1618897996318-5a901fa696ca?w=400&q=80",
+  "Kiwi (3 pcs)":
+    "https://images.unsplash.com/photo-1618897996318-5a901fa696ca?w=400&q=80",
+  "Chikoo (500g)":
+    "https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=400&q=80",
+  "Coconut (1 pc)":
+    "https://images.unsplash.com/photo-1580984969071-a8da5656c2fb?w=400&q=80",
+  "Lemon (6 pcs)":
+    "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=400&q=80",
+  "Muskmelon (1 pc)":
+    "https://images.unsplash.com/photo-1571680322279-a226e6a4cc2a?w=400&q=80",
+  "Dragon Fruit (1 pc)":
+    "https://images.unsplash.com/photo-1527325678964-54921661f888?w=400&q=80",
+  "Pear (1 kg)":
+    "https://images.unsplash.com/photo-1546548970-71785318a17b?w=400&q=80",
+  "Custard Apple (500g)":
+    "https://images.unsplash.com/photo-1604495772376-9657f0621d46?w=400&q=80",
+  "Plums (500g)":
+    "https://images.unsplash.com/photo-1563746924237-f81d67e8f9c8?w=400&q=80",
 
   // ── Fresh Juice ──────────────────────────────────────────────────────────
-  "Orange Juice":
+  "Fresh Orange Juice (500ml)":
     "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&q=80",
-  "Mango Juice":
-    "https://images.unsplash.com/photo-1546173159-315724a31696?w=400&q=80",
-  "Apple Juice":
-    "https://images.unsplash.com/photo-1576673442511-7e39b6545c87?w=400&q=80",
-  "Lemon Juice":
-    "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&q=80",
-  "Mixed Fruit Juice":
-    "https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?w=400&q=80",
-  "Sugarcane Juice":
+  "Sugarcane Juice (500ml)":
     "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=400&q=80",
-  "Pineapple Juice":
-    "https://images.unsplash.com/photo-1587830399743-94c4a88bbee3?w=400&q=80",
-  "Watermelon Juice":
-    "https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=400&q=80",
-  "Coconut Water":
+  "Mixed Fruit Juice (500ml)":
+    "https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?w=400&q=80",
+  "Coconut Water (1 pc)":
     "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80",
-  "Grape Juice":
+  "Lemon Ginger Juice (500ml)":
+    "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&q=80",
+  "Pineapple Juice (500ml)":
+    "https://images.unsplash.com/photo-1587830399743-94c4a88bbee3?w=400&q=80",
+  "Mango Juice (500ml)":
+    "https://images.unsplash.com/photo-1546173159-315724a31696?w=400&q=80",
+  "Watermelon Juice (500ml)":
+    "https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=400&q=80",
+  "Carrot Juice (300ml)":
+    "https://images.unsplash.com/photo-1623428187969-5da2dcea5ebf?w=400&q=80",
+  "Pomegranate Juice (300ml)":
     "https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=400&q=80",
+  "Guava Juice (500ml)":
+    "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=400&q=80",
+  "Apple Juice (500ml)":
+    "https://images.unsplash.com/photo-1576673442511-7e39b6545c87?w=400&q=80",
+  "Grape Juice (300ml)":
+    "https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=400&q=80",
+  "Spinach Green Juice (300ml)":
+    "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=400&q=80",
+  "Papaya Juice (400ml)":
+    "https://images.unsplash.com/photo-1526318896980-cf78c088247c?w=400&q=80",
+  "Rose Milk (300ml)":
+    "https://images.unsplash.com/photo-1599789197514-47270cd526b4?w=400&q=80",
 
   // ── Hot Items ────────────────────────────────────────────────────────────
-  Samosa:
+  "Samosa (2 pcs)":
     "https://images.unsplash.com/photo-1601050690117-94f5f7a2d2e4?w=400&q=80",
-  Vada: "https://images.unsplash.com/photo-1630383249896-424e482df921?w=400&q=80",
-  "Bread Roll":
-    "https://images.unsplash.com/photo-1549931319-a545dcf3bc7c?w=400&q=80",
-  "Puff Pastry":
-    "https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=400&q=80",
-  Tea: "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400&q=80",
-  Coffee:
+  "Vada (2 pcs)":
+    "https://images.unsplash.com/photo-1630383249896-424e482df921?w=400&q=80",
+  "Idli (4 pcs)":
+    "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&q=80",
+  "Pongal (1 plate)":
+    "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400&q=80",
+  "Mirchi Bhaji (3 pcs)":
+    "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80",
+  "Filter Coffee (1 cup)":
     "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80",
-  Poha: "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=400&q=80",
-  Upma: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400&q=80",
-  Idli: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&q=80",
-  Dosa: "https://images.unsplash.com/photo-1650884212930-f79df0a94b3a?w=400&q=80",
-  "Masala Chai":
-    "https://images.unsplash.com/photo-1567922045116-2a00fae2ed03?w=400&q=80",
-  Bread:
-    "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80",
-  Biscuits:
-    "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400&q=80",
-  "Pav Bhaji":
+  "Masala Dosa (1 pc)":
+    "https://images.unsplash.com/photo-1650884212930-f79df0a94b3a?w=400&q=80",
+  "Upma (1 plate)":
+    "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400&q=80",
+  "Puri Bhaji (2 pcs)":
     "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&q=80",
+  "Poha (1 plate)":
+    "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=400&q=80",
+  "Chai (1 cup)":
+    "https://images.unsplash.com/photo-1567922045116-2a00fae2ed03?w=400&q=80",
+  "Pakora (6 pcs)":
+    "https://images.unsplash.com/photo-1601050690117-94f5f7a2d2e4?w=400&q=80",
+  "Bread Omelette":
+    "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400&q=80",
+  "Parotta (2 pcs)":
+    "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
+  "Aloo Paratha (2 pcs)":
+    "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80",
+  "Veg Biryani (1 plate)":
+    "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&q=80",
+  "Onion Uttapam (1 pc)":
+    "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&q=80",
+  "Rava Dosa (1 pc)":
+    "https://images.unsplash.com/photo-1650884212930-f79df0a94b3a?w=400&q=80",
+  "Chicken Roll (1 pc)":
+    "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&q=80",
 
   // ── Cold Items ───────────────────────────────────────────────────────────
-  "Vanilla Ice Cream":
+  "Ice Cream Vanilla (500ml)":
     "https://images.unsplash.com/photo-1570197571499-166b36435e9f?w=400&q=80",
-  "Chocolate Ice Cream":
-    "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80",
-  "Mango Lassi":
-    "https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=400&q=80",
-  Buttermilk:
+  "Lassi (500ml)":
     "https://images.unsplash.com/photo-1628557010796-2aa3a4960a56?w=400&q=80",
-  "Cold Coffee":
-    "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80",
-  "Coca Cola":
+  "Buttermilk (500ml)":
+    "https://images.unsplash.com/photo-1628557010796-2aa3a4960a56?w=400&q=80",
+  "Cold Drinks (300ml)":
     "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&q=80",
-  Sprite:
-    "https://images.unsplash.com/photo-1625174823475-d3f9e13de6b6?w=400&q=80",
-  "Cold Water":
-    "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&q=80",
-  "Mango Ice Cream":
+  "Flavoured Milk (200ml)":
+    "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80",
+  "Frozen Peas (500g)":
+    "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80",
+  "Mango Ice Cream (500ml)":
     "https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=400&q=80",
-  "Strawberry Ice Cream":
+  "Chocolate Ice Cream (500ml)":
+    "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80",
+  "Strawberry Ice Cream (500ml)":
     "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&q=80",
-  Milkshake:
+  "Mango Lassi (300ml)":
+    "https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=400&q=80",
+  "Cold Coffee (300ml)":
+    "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80",
+  "Chocolate Milkshake (300ml)":
     "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&q=80",
-  Yogurt:
+  "Sprite (300ml)":
+    "https://images.unsplash.com/photo-1625174823475-d3f9e13de6b6?w=400&q=80",
+  "Tender Coconut Ice Cream":
+    "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80",
+  "Yogurt (200g)":
     "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&q=80",
-  "Fruit Salad":
+  "Fruit Salad Cup (1 pc)":
     "https://images.unsplash.com/photo-1568158879083-c42860933ed7?w=400&q=80",
+  "Paneer Ice Cream Bar":
+    "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?w=400&q=80",
+  "Lemon Soda (300ml)":
+    "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&q=80",
+  "Iced Tea (300ml)":
+    "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80",
+  "Kulfi (2 pcs)":
+    "https://images.unsplash.com/photo-1570197571499-166b36435e9f?w=400&q=80",
 };
 
 // Category-level fallback images when product-specific image is not found
@@ -217,6 +317,7 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
 
   const updatePrice = useUpdateProductPrice();
   const toggleAvailability = useToggleProductAvailability();
+  const removeProduct = useRemoveProduct();
 
   const icon = CATEGORY_ICONS[product.category] ?? "📦";
   const colorClass =
@@ -272,6 +373,18 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
       },
       onError: () => {
         toast.error("Failed to update availability");
+      },
+    });
+  }
+
+  function handleRemove() {
+    if (!confirm(`Are you sure you want to remove "${product.name}"?`)) return;
+    removeProduct.mutate(product.id, {
+      onSuccess: () => {
+        toast.success("Product removed");
+      },
+      onError: () => {
+        toast.error("Failed to remove product");
       },
     });
   }
@@ -513,6 +626,20 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
                         <ShoppingBag className="h-3 w-3 mr-1" />
                       )}
                       {product.available ? "Stock Off" : "In Stock"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      onClick={handleRemove}
+                      disabled={removeProduct.isPending}
+                      title="Remove product"
+                    >
+                      {removeProduct.isPending ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3 w-3" />
+                      )}
                     </Button>
                   </div>
                 )}
