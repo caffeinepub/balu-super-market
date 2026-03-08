@@ -55,15 +55,19 @@ export function useProducts() {
     queryFn: async () => {
       // First check localStorage for persisted products
       const localData = loadProductsLocally();
+
       if (localData && localData.length > 0) {
         // We have local data -- try to sync from backend if available
         if (actor) {
           try {
             const backendProducts = await actor.getProducts();
             if (backendProducts && backendProducts.length > 0) {
-              // Backend has data -- use it and update local cache
-              saveProductsLocally(backendProducts);
-              return backendProducts;
+              // Only use backend data if it has MORE or EQUAL products than local.
+              // If local has more, user added products locally -- keep local data.
+              if (backendProducts.length >= localData.length) {
+                saveProductsLocally(backendProducts);
+                return backendProducts;
+              }
             }
           } catch {
             // Backend unavailable, use local data
@@ -72,7 +76,7 @@ export function useProducts() {
         return localData;
       }
 
-      // No local data -- seed from SAMPLE_PRODUCTS
+      // No local data -- seed from SAMPLE_PRODUCTS and save locally
       const seedData = SAMPLE_PRODUCTS as Product[];
       saveProductsLocally(seedData);
       return seedData;

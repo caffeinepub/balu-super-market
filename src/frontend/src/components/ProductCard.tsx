@@ -416,15 +416,15 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
             <img
               src={imageUrl}
               alt={product.name}
-              className="w-full h-auto object-contain block"
+              className="w-full h-52 object-cover block"
               onError={() => setImgError(true)}
             />
           )}
           {/* Fallback icon when no image */}
           {(!imageUrl || imgError) && (
-            <div className="w-full py-8 flex items-center justify-center">
+            <div className="w-full h-52 flex items-center justify-center">
               <span
-                className="text-5xl"
+                className="text-6xl"
                 role="img"
                 aria-label={product.category}
               >
