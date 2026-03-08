@@ -400,7 +400,7 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
       <Card className="relative overflow-hidden border-border/60 shadow-xs hover:shadow-md transition-shadow duration-300 market-gradient-card h-full">
         {/* Product image section */}
         <div
-          className={`relative w-full overflow-hidden ${
+          className={`relative w-full h-64 overflow-hidden ${
             product.category === "Fresh Fruits"
               ? "bg-gradient-to-br from-red-50 to-orange-100"
               : product.category === "Fresh Juice"
@@ -416,13 +416,13 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
             <img
               src={imageUrl}
               alt={product.name}
-              className="w-full h-52 object-cover block"
+              className="absolute inset-0 w-full h-full object-cover"
               onError={() => setImgError(true)}
             />
           )}
           {/* Fallback icon when no image */}
           {(!imageUrl || imgError) && (
-            <div className="w-full h-52 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center">
               <span
                 className="text-6xl"
                 role="img"
