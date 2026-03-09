@@ -287,6 +287,198 @@ function getDynamicImageUrl(productName: string, category: string): string {
   return `https://source.unsplash.com/400x300/?${keyword}&sig=${seed}`;
 }
 
+// Tamil names for all products
+const PRODUCT_TAMIL_NAMES: Record<string, string> = {
+  // Grocery
+  Rice: "அரிசி",
+  "Wheat Flour": "கோதுமை மாவு",
+  Sugar: "சர்க்கரை",
+  Salt: "உப்பு",
+  "Cooking Oil": "சமையல் எண்ணெய்",
+  "Toor Dal": "துவரம் பருப்பு",
+  "Turmeric Powder": "மஞ்சள் தூள்",
+  "Red Chilli Powder": "மிளகாய் தூள்",
+  "Mustard Seeds": "கடுகு",
+  "Basmati Rice": "பாஸ்மதி அரிசி",
+  Milk: "பால்",
+  Eggs: "முட்டை",
+  Butter: "வெண்ணெய்",
+  Honey: "தேன்",
+  Noodles: "நூடுல்ஸ்",
+  Chips: "சிப்ஸ்",
+  Jam: "ஜாம்",
+  "Basmati Rice (5 kg)": "பாஸ்மதி அரிசி (5 கி.கி)",
+  "Toor Dal (1 kg)": "துவரம் பருப்பு (1 கி.கி)",
+  "Sunflower Oil (1 L)": "சூரியகாந்தி எண்ணெய் (1 லி)",
+  "Whole Wheat Atta (5 kg)": "கோதுமை மாவு (5 கி.கி)",
+  "Sugar (1 kg)": "சர்க்கரை (1 கி.கி)",
+  "Salt (1 kg)": "உப்பு (1 கி.கி)",
+  "Chilli Powder (200g)": "மிளகாய் தூள் (200கி)",
+  "Turmeric Powder (100g)": "மஞ்சள் தூள் (100கி)",
+  "Biscuits Marie (3 pack)": "மேரி பிஸ்கட் (3 பேக்)",
+  "Bread (Large Loaf)": "பிரட் (பெரியது)",
+  "Butter (500g)": "வெண்ணெய் (500கி)",
+  "Eggs (12 pack)": "முட்டை (12 பக்)",
+  "Moong Dal (500g)": "பாசி பருப்பு (500கி)",
+  "Chana Dal (1 kg)": "கடலை பருப்பு (1 கி.கி)",
+  "Urad Dal (500g)": "உளுந்து (500கி)",
+  "Mustard Seeds (100g)": "கடுகு (100கி)",
+  "Cumin Seeds (100g)": "சீரகம் (100கி)",
+  "Coriander Powder (200g)": "மல்லி தூள் (200கி)",
+  "Garam Masala (100g)": "கரம் மசாலா (100கி)",
+  "Coconut Oil (500ml)": "தேங்காய் எண்ணெய் (500மி.லி)",
+  "Ghee (500ml)": "நெய் (500மி.லி)",
+  "Honey (250g)": "தேன் (250கி)",
+  "Milk (1 L)": "பால் (1 லி)",
+  "Maggi Noodles (8 pack)": "மேகி நூடுல்ஸ் (8 பேக்)",
+  "Tomato Ketchup (500g)": "தக்காளி கெட்சப் (500கி)",
+  "Soya Sauce (200ml)": "சோயா சாஸ் (200மி.லி)",
+  "Pasta (500g)": "பாஸ்தா (500கி)",
+  "Oats (500g)": "ஓட்ஸ் (500கி)",
+  "Cornflakes (500g)": "கார்ன்ஃப்ளேக்ஸ் (500கி)",
+  "Green Tea (25 bags)": "பச்சை தேயிலை (25 பைகள்)",
+  "Almonds (250g)": "பாதாம் (250கி)",
+  "Cashews (250g)": "முந்திரி (250கி)",
+  "Raisins (200g)": "திராட்சை (200கி)",
+  "Groundnut Oil (1 L)": "நிலக்கடலை எண்ணெய் (1 லி)",
+  "Idli Rice (5 kg)": "இட்லி அரிசி (5 கி.கி)",
+  "Vermicelli (200g)": "சேவல் (200கி)",
+  "Poha (500g)": "அவல் (500கி)",
+  "Chicken Masala (100g)": "சிக்கன் மசாலா (100கி)",
+
+  // Fresh Fruits
+  Apple: "ஆப்பிள்",
+  Banana: "வாழைப்பழம்",
+  Mango: "மாம்பழம்",
+  Orange: "ஆரஞ்சு",
+  Grapes: "திராட்சை",
+  Watermelon: "தர்பூசணி",
+  Papaya: "பப்பாளி",
+  Pomegranate: "மாதுளை",
+  Guava: "கொய்யா",
+  Pineapple: "அன்னாசி",
+  Coconut: "தேங்காய்",
+  Strawberry: "ஸ்ட்ராபெரி",
+  Kiwi: "கிவி",
+  "Alphonso Mangoes (1 kg)": "அல்ஃபான்சோ மாம்பழம் (1 கி.கி)",
+  "Bananas (1 dozen)": "வாழைப்பழம் (1 டஜன்)",
+  "Apples (1 kg)": "ஆப்பிள் (1 கி.கி)",
+  "Grapes (500g)": "திராட்சை (500கி)",
+  "Watermelon (whole)": "தர்பூசணி (முழுவதும்)",
+  "Pomegranate (2 pcs)": "மாதுளை (2 எண்ணிக்கை)",
+  "Papaya (1 pc)": "பப்பாளி (1 எண்ணிக்கை)",
+  "Pineapple (1 pc)": "அன்னாசி (1 எண்ணிக்கை)",
+  "Guava (500g)": "கொய்யா (500கி)",
+  "Oranges (1 kg)": "ஆரஞ்சு (1 கி.கி)",
+  "Strawberries (250g)": "ஸ்ட்ராபெரி (250கி)",
+  "Kiwi (3 pcs)": "கிவி (3 எண்ணிக்கை)",
+  "Chikoo (500g)": "சப்போட்டா (500கி)",
+  "Coconut (1 pc)": "தேங்காய் (1 எண்ணிக்கை)",
+  "Lemon (6 pcs)": "எலுமிச்சை (6 எண்ணிக்கை)",
+  "Muskmelon (1 pc)": "முலாம்பழம் (1 எண்ணிக்கை)",
+  "Dragon Fruit (1 pc)": "டிராகன் பழம் (1 எண்ணிக்கை)",
+  "Pear (1 kg)": "பேரிக்காய் (1 கி.கி)",
+  "Custard Apple (500g)": "சீத்தாப்பழம் (500கி)",
+  "Plums (500g)": "அள்ளிக்காய் (500கி)",
+
+  // Fresh Juice
+  "Orange Juice": "ஆரஞ்சு ஜூஸ்",
+  "Mango Juice": "மாம்பழ ஜூஸ்",
+  "Apple Juice": "ஆப்பிள் ஜூஸ்",
+  "Lemon Juice": "எலுமிச்சை ஜூஸ்",
+  "Mixed Fruit Juice": "கலவை பழ ஜூஸ்",
+  "Sugarcane Juice": "கரும்பு ஜூஸ்",
+  "Pineapple Juice": "அன்னாசி ஜூஸ்",
+  "Watermelon Juice": "தர்பூசணி ஜூஸ்",
+  "Coconut Water": "இளநீர்",
+  "Grape Juice": "திராட்சை ஜூஸ்",
+  "Fresh Orange Juice (500ml)": "ஆரஞ்சு ஜூஸ் (500மி.லி)",
+  "Sugarcane Juice (500ml)": "கரும்பு ஜூஸ் (500மி.லி)",
+  "Mixed Fruit Juice (500ml)": "கலவை பழ ஜூஸ் (500மி.லி)",
+  "Coconut Water (1 pc)": "இளநீர் (1 எண்ணிக்கை)",
+  "Lemon Ginger Juice (500ml)": "எலுமிச்சை இஞ்சி ஜூஸ் (500மி.லி)",
+  "Pineapple Juice (500ml)": "அன்னாசி ஜூஸ் (500மி.லி)",
+  "Mango Juice (500ml)": "மாம்பழ ஜூஸ் (500மி.லி)",
+  "Watermelon Juice (500ml)": "தர்பூசணி ஜூஸ் (500மி.லி)",
+  "Carrot Juice (300ml)": "கேரட் ஜூஸ் (300மி.லி)",
+  "Pomegranate Juice (300ml)": "மாதுளை ஜூஸ் (300மி.லி)",
+  "Guava Juice (500ml)": "கொய்யா ஜூஸ் (500மி.லி)",
+  "Apple Juice (500ml)": "ஆப்பிள் ஜூஸ் (500மி.லி)",
+  "Grape Juice (300ml)": "திராட்சை ஜூஸ் (300மி.லி)",
+  "Spinach Green Juice (300ml)": "கீரை ஜூஸ் (300மி.லி)",
+  "Papaya Juice (400ml)": "பப்பாளி ஜூஸ் (400மி.லி)",
+  "Rose Milk (300ml)": "ரோஸ் மில்க் (300மி.லி)",
+
+  // Hot Items
+  Samosa: "சமோசா",
+  Vada: "வடை",
+  "Bread Roll": "பிரட் ரோல்",
+  "Puff Pastry": "பஃப்",
+  Tea: "தேநீர்",
+  Coffee: "காபி",
+  Poha: "அவல்",
+  Upma: "உப்புமா",
+  Idli: "இட்லி",
+  Dosa: "தோசை",
+  "Masala Chai": "மசாலா தேநீர்",
+  "Bread (Loaf)": "பிரட்",
+  Biscuits: "பிஸ்கட்",
+  "Samosa (2 pcs)": "சமோசா (2 எண்ணிக்கை)",
+  "Vada (2 pcs)": "வடை (2 எண்ணிக்கை)",
+  "Idli (4 pcs)": "இட்லி (4 எண்ணிக்கை)",
+  "Pongal (1 plate)": "பொங்கல் (1 தட்டு)",
+  "Mirchi Bhaji (3 pcs)": "மிளகாய் பஜ்ஜி (3 எண்ணிக்கை)",
+  "Filter Coffee (1 cup)": "ஃபில்டர் காபி (1 கப்)",
+  "Masala Dosa (1 pc)": "மசாலா தோசை (1 எண்ணிக்கை)",
+  "Upma (1 plate)": "உப்புமா (1 தட்டு)",
+  "Puri Bhaji (2 pcs)": "பூரி பாஜி (2 எண்ணிக்கை)",
+  "Poha (1 plate)": "அவல் (1 தட்டு)",
+  "Chai (1 cup)": "தேநீர் (1 கப்)",
+  "Pakora (6 pcs)": "பகோடா (6 எண்ணிக்கை)",
+  "Bread Omelette": "பிரட் ஆம்லெட்",
+  "Parotta (2 pcs)": "பரோட்டா (2 எண்ணிக்கை)",
+  "Aloo Paratha (2 pcs)": "ஆலு பராத்தா (2 எண்ணிக்கை)",
+  "Veg Biryani (1 plate)": "வெஜ் பிரியாணி (1 தட்டு)",
+  "Onion Uttapam (1 pc)": "வெங்காய உத்தாப்பம் (1 எண்ணிக்கை)",
+  "Rava Dosa (1 pc)": "ரவா தோசை (1 எண்ணிக்கை)",
+  "Chicken Roll (1 pc)": "சிக்கன் ரோல் (1 எண்ணிக்கை)",
+
+  // Cold Items
+  "Vanilla Ice Cream": "வெனிலா ஐஸ்கிரீம்",
+  "Chocolate Ice Cream": "சாக்லேட் ஐஸ்கிரீம்",
+  "Mango Lassi": "மாம்பழ லஸ்ஸி",
+  Buttermilk: "மோர்",
+  "Cold Coffee": "கோல்ட் காபி",
+  "Coca Cola": "கோகோ கோலா",
+  Sprite: "ஸ்பிரைட்",
+  "Cold Water": "குளிர்ந்த நீர்",
+  "Mango Ice Cream": "மாம்பழ ஐஸ்கிரீம்",
+  "Strawberry Ice Cream": "ஸ்ட்ராபெரி ஐஸ்கிரீம்",
+  Milkshake: "மில்க்ஷேக்",
+  Yogurt: "தயிர்",
+  "Fruit Salad": "பழ சாலட்",
+  "Ice Cream Vanilla (500ml)": "வெனிலா ஐஸ்கிரீம் (500மி.லி)",
+  "Lassi (500ml)": "லஸ்ஸி (500மி.லி)",
+  "Buttermilk (500ml)": "மோர் (500மி.லி)",
+  "Cold Drinks (300ml)": "குளிர் பானம் (300மி.லி)",
+  "Flavoured Milk (200ml)": "ஃப்ளேவர்ட் பால் (200மி.லி)",
+  "Frozen Peas (500g)": "உறைந்த பட்டாணி (500கி)",
+  "Mango Ice Cream (500ml)": "மாம்பழ ஐஸ்கிரீம் (500மி.லி)",
+  "Chocolate Ice Cream (500ml)": "சாக்லேட் ஐஸ்கிரீம் (500மி.லி)",
+  "Strawberry Ice Cream (500ml)": "ஸ்ட்ராபெரி ஐஸ்கிரீம் (500மி.லி)",
+  "Mango Lassi (300ml)": "மாம்பழ லஸ்ஸி (300மி.லி)",
+  "Cold Coffee (300ml)": "கோல்ட் காபி (300மி.லி)",
+  "Chocolate Milkshake (300ml)": "சாக்லேட் மில்க்ஷேக் (300மி.லி)",
+  "Sprite (300ml)": "ஸ்பிரைட் (300மி.லி)",
+  "Tender Coconut Ice Cream": "தேங்காய் ஐஸ்கிரீம்",
+  "Yogurt (200g)": "தயிர் (200கி)",
+  "Fruit Salad Cup (1 pc)": "பழ சாலட் (1 கப்)",
+  "Paneer Ice Cream Bar": "பன்னீர் ஐஸ்கிரீம் பார்",
+  "Lemon Soda (300ml)": "எலுமிச்சை சோடா (300மி.லி)",
+  "Iced Tea (300ml)": "ஐஸ்டி (300மி.லி)",
+  "Kulfi (2 pcs)": "குல்ஃபி (2 எண்ணிக்கை)",
+};
+
 const CATEGORY_COLORS: Record<string, string> = {
   Grocery: "bg-amber-100 text-amber-800 border-amber-200",
   "Fresh Fruits": "bg-red-100 text-red-800 border-red-200",
@@ -303,9 +495,14 @@ function formatPrice(price: bigint): string {
 interface ProductCardProps {
   product: Product;
   isAdmin: boolean;
+  compact?: boolean;
 }
 
-export function ProductCard({ product, isAdmin }: ProductCardProps) {
+export function ProductCard({
+  product,
+  isAdmin,
+  compact = false,
+}: ProductCardProps) {
   const [editingPrice, setEditingPrice] = useState(false);
   const [priceInput, setPriceInput] = useState(
     Number(product.price).toString(),
@@ -389,38 +586,97 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
     });
   }
 
+  const categoryAccent: Record<string, string> = {
+    "Fresh Fruits": "from-red-400 to-orange-400",
+    "Fresh Juice": "from-orange-400 to-yellow-400",
+    "Hot Items": "from-rose-500 to-red-400",
+    "Cold Items": "from-blue-400 to-cyan-400",
+    Grocery: "from-green-500 to-emerald-400",
+  };
+  const accentClass =
+    categoryAccent[product.category] ?? "from-green-500 to-emerald-400";
+
+  const categoryBg: Record<string, string> = {
+    "Fresh Fruits": "from-red-50 to-orange-100",
+    "Fresh Juice": "from-orange-50 to-yellow-100",
+    "Hot Items": "from-rose-50 to-red-100",
+    "Cold Items": "from-blue-50 to-cyan-100",
+    Grocery: "from-green-50 to-emerald-100",
+  };
+  const bgClass =
+    categoryBg[product.category] ?? "from-green-50 to-emerald-100";
+
+  if (compact) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -2, scale: 1.01 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+        className={`group ${!product.available ? "stock-unavailable" : ""}`}
+      >
+        <Card className="relative overflow-hidden border-[oklch(0.90_0.018_78)] card-shadow hover:card-shadow-hover transition-all duration-300 h-full">
+          {/* Accent bar */}
+          <div className={`h-1 w-full bg-gradient-to-r ${accentClass}`} />
+          {/* Image */}
+          <div
+            className={`relative w-full aspect-square bg-gradient-to-br ${bgClass}`}
+          >
+            {imageUrl && !imgError && (
+              <img
+                src={imageUrl}
+                alt={product.name}
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={() => setImgError(true)}
+              />
+            )}
+            {(!imageUrl || imgError) && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-4xl">{icon}</span>
+              </div>
+            )}
+            {!product.available && (
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <span className="bg-red-600 text-white text-[0.6rem] font-black px-2 py-0.5 rounded uppercase tracking-wide">
+                  Out of Stock
+                </span>
+              </div>
+            )}
+          </div>
+          <CardContent className="p-3">
+            <h3 className="font-display font-bold text-xs leading-tight text-[oklch(0.15_0.05_50)] line-clamp-2 mb-1">
+              {product.name}
+            </h3>
+            <p className="font-display font-black text-sm text-[oklch(0.36_0.14_152)]">
+              {formatPrice(product.price)}
+            </p>
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -3 }}
+      whileHover={{ y: -4 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={`group ${!product.available ? "stock-unavailable" : ""}`}
     >
-      <Card className="relative overflow-hidden border-border/60 shadow-xs hover:shadow-md transition-shadow duration-300 market-gradient-card h-full">
+      <Card className="relative overflow-hidden border-[oklch(0.90_0.018_78)] card-shadow hover:card-shadow-hover transition-all duration-300 h-full flex flex-col">
         {/* Product image section */}
         <div
-          className={`relative w-full h-64 overflow-hidden ${
-            product.category === "Fresh Fruits"
-              ? "bg-gradient-to-br from-red-50 to-orange-100"
-              : product.category === "Fresh Juice"
-                ? "bg-gradient-to-br from-orange-50 to-yellow-100"
-                : product.category === "Hot Items"
-                  ? "bg-gradient-to-br from-rose-50 to-red-100"
-                  : product.category === "Cold Items"
-                    ? "bg-gradient-to-br from-blue-50 to-cyan-100"
-                    : "bg-gradient-to-br from-green-50 to-emerald-100"
-          }`}
+          className={`relative w-full aspect-[4/3] bg-gradient-to-br ${bgClass} overflow-hidden shrink-0`}
         >
           {imageUrl && !imgError && (
             <img
               src={imageUrl}
               alt={product.name}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               onError={() => setImgError(true)}
             />
           )}
-          {/* Fallback icon when no image */}
           {(!imageUrl || imgError) && (
             <div className="absolute inset-0 flex items-center justify-center">
               <span
@@ -433,14 +689,33 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
             </div>
           )}
 
-          {/* Subtle overlay for unavailable items */}
+          {/* Gradient overlay at bottom */}
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent" />
+
+          {/* Price chip on image */}
+          <div className="absolute bottom-2.5 left-2.5">
+            <span className="bg-white/95 backdrop-blur-sm text-[oklch(0.30_0.14_152)] font-display font-black text-sm px-2.5 py-1 rounded-lg shadow-sm">
+              {formatPrice(product.price)}
+            </span>
+          </div>
+
+          {/* Out of stock overlay */}
           {!product.available && (
-            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-              <span className="bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded">
-                OUT OF STOCK
+            <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
+              <span className="bg-red-600 text-white text-xs font-black px-3 py-1 rounded-lg uppercase tracking-wide shadow-lg">
+                Out of Stock
               </span>
             </div>
           )}
+
+          {/* Category badge top-left */}
+          <div className="absolute top-2.5 left-2.5">
+            <span
+              className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full border backdrop-blur-sm bg-white/80 ${colorClass}`}
+            >
+              {icon} {product.category}
+            </span>
+          </div>
 
           {/* Admin: change image button */}
           {isAdmin && !editingImage && (
@@ -451,8 +726,9 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
                 setImageInputError(false);
                 setEditingImage(true);
               }}
-              className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-2.5 right-2.5 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
               title="Change image"
+              data-ocid="product.image.edit_button"
             >
               <ImageIcon className="h-3.5 w-3.5" />
             </button>
@@ -460,10 +736,8 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
 
           {/* Image edit overlay */}
           {isAdmin && editingImage && (
-            <div className="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-2 p-3">
-              <p className="text-white text-xs font-semibold">
-                Paste Image URL
-              </p>
+            <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-2.5 p-4 backdrop-blur-sm">
+              <p className="text-white text-xs font-bold">Paste Image URL</p>
               <input
                 type="url"
                 placeholder="https://..."
@@ -472,7 +746,7 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
                   setImageInput(e.target.value);
                   setImageInputError(false);
                 }}
-                className="w-full text-xs px-2 py-1.5 rounded border border-white/30 bg-white/10 text-white placeholder:text-white/50 focus:outline-none focus:border-white/70"
+                className="w-full text-xs px-3 py-2 rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSaveImage();
                   if (e.key === "Escape") setEditingImage(false);
@@ -485,14 +759,14 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
                 <button
                   type="button"
                   onClick={handleSaveImage}
-                  className="bg-market-green hover:bg-market-green/90 text-white text-xs px-3 py-1 rounded font-semibold"
+                  className="bg-[oklch(0.40_0.14_152)] hover:bg-[oklch(0.36_0.14_152)] text-white text-xs px-3.5 py-1.5 rounded-lg font-bold"
                 >
                   Save
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditingImage(false)}
-                  className="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1 rounded"
+                  className="bg-white/15 hover:bg-white/25 text-white text-xs px-3 py-1.5 rounded-lg"
                 >
                   Cancel
                 </button>
@@ -501,151 +775,128 @@ export function ProductCard({ product, isAdmin }: ProductCardProps) {
           )}
         </div>
 
-        {/* Top accent bar with category color */}
-        <div
-          className={`h-1.5 w-full ${
-            product.category === "Fresh Fruits"
-              ? "bg-gradient-to-r from-red-400 to-orange-400"
-              : product.category === "Fresh Juice"
-                ? "bg-gradient-to-r from-orange-400 to-yellow-400"
-                : product.category === "Hot Items"
-                  ? "bg-gradient-to-r from-rose-500 to-red-400"
-                  : product.category === "Cold Items"
-                    ? "bg-gradient-to-r from-blue-400 to-cyan-400"
-                    : "bg-gradient-to-r from-green-500 to-emerald-400"
-          }`}
-        />
+        {/* Accent bar */}
+        <div className={`h-0.5 w-full bg-gradient-to-r ${accentClass}`} />
 
-        <CardContent className="p-4 flex flex-col gap-3 h-full">
-          {/* Header row: category + availability */}
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Badge
-                variant="outline"
-                className={`text-xs font-medium ${colorClass}`}
-              >
-                {product.category}
-              </Badge>
-            </div>
-            {!product.available && (
-              <Badge variant="destructive" className="text-xs shrink-0">
-                Out of Stock
-              </Badge>
+        <CardContent className="p-3.5 flex flex-col gap-2 flex-1">
+          {/* Product name */}
+          <div>
+            <h3 className="font-display font-bold text-[0.875rem] leading-snug text-[oklch(0.15_0.05_50)] line-clamp-2 group-hover:text-[oklch(0.36_0.14_152)] transition-colors">
+              {product.name}
+            </h3>
+            {PRODUCT_TAMIL_NAMES[product.name] && (
+              <p className="text-[0.7rem] text-[oklch(0.40_0.14_152)] font-semibold mt-0.5 leading-none">
+                {PRODUCT_TAMIL_NAMES[product.name]}
+              </p>
             )}
           </div>
 
-          {/* Product name */}
-          <h3 className="font-display font-semibold text-[0.95rem] leading-tight text-foreground line-clamp-2 group-hover:text-market-green transition-colors">
-            {product.name}
-          </h3>
-
           {/* Description */}
-          <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2 flex-1">
+          <p className="text-[oklch(0.55_0.03_65)] text-[0.72rem] leading-relaxed line-clamp-2 flex-1">
             {product.description}
           </p>
 
-          {/* Price section */}
-          <div className="mt-auto pt-2 border-t border-border/50">
-            {isAdmin && editingPrice ? (
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm font-bold text-market-green">
-                    ₹
-                  </span>
-                  <Input
-                    type="number"
-                    value={priceInput}
-                    onChange={(e) => setPriceInput(e.target.value)}
-                    className="pl-7 h-8 text-sm font-semibold"
-                    min="0"
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleSavePrice();
-                      if (e.key === "Escape") setEditingPrice(false);
-                    }}
-                  />
-                </div>
-                <Button
-                  size="icon"
-                  variant="default"
-                  className="h-8 w-8 bg-market-green hover:bg-market-green/90 shrink-0"
-                  onClick={handleSavePrice}
-                  disabled={updatePrice.isPending}
-                >
-                  {updatePrice.isPending ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Check className="h-3.5 w-3.5" />
-                  )}
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-8 w-8 shrink-0"
-                  onClick={() => {
-                    setEditingPrice(false);
-                    setPriceInput(Number(product.price).toString());
-                  }}
-                >
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <span className="price-badge text-lg">
-                  {formatPrice(product.price)}
-                </span>
-                {isAdmin && (
-                  <div className="flex gap-1.5">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-7 px-2 text-xs text-muted-foreground hover:text-market-green hover:bg-market-green-light"
-                      onClick={() => {
-                        setPriceInput(Number(product.price).toString());
-                        setEditingPrice(true);
+          {/* Admin actions */}
+          {isAdmin && (
+            <div className="pt-2 border-t border-[oklch(0.90_0.018_78)]">
+              {editingPrice ? (
+                <div className="flex items-center gap-1.5">
+                  <div className="relative flex-1">
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm font-black text-[oklch(0.36_0.14_152)]">
+                      ₹
+                    </span>
+                    <Input
+                      type="number"
+                      value={priceInput}
+                      onChange={(e) => setPriceInput(e.target.value)}
+                      className="pl-7 h-8 text-sm font-bold"
+                      min="0"
+                      autoFocus
+                      data-ocid="product.price.input"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSavePrice();
+                        if (e.key === "Escape") setEditingPrice(false);
                       }}
-                    >
-                      <Pencil className="h-3 w-3 mr-1" />
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className={`h-7 px-2 text-xs ${
-                        product.available
-                          ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          : "text-green-700 hover:bg-green-50"
-                      }`}
-                      onClick={handleToggle}
-                      disabled={toggleAvailability.isPending}
-                    >
-                      {toggleAvailability.isPending ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <ShoppingBag className="h-3 w-3 mr-1" />
-                      )}
-                      {product.available ? "Stock Off" : "In Stock"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
-                      onClick={handleRemove}
-                      disabled={removeProduct.isPending}
-                      title="Remove product"
-                    >
-                      {removeProduct.isPending ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-3 w-3" />
-                      )}
-                    </Button>
+                    />
                   </div>
-                )}
-              </div>
-            )}
-          </div>
+                  <Button
+                    size="icon"
+                    className="h-8 w-8 bg-[oklch(0.40_0.14_152)] hover:bg-[oklch(0.36_0.14_152)] shrink-0"
+                    onClick={handleSavePrice}
+                    disabled={updatePrice.isPending}
+                    data-ocid="product.price.save_button"
+                  >
+                    {updatePrice.isPending ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Check className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="h-8 w-8 shrink-0"
+                    onClick={() => {
+                      setEditingPrice(false);
+                      setPriceInput(Number(product.price).toString());
+                    }}
+                    data-ocid="product.price.cancel_button"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 px-2 text-xs text-[oklch(0.50_0.03_65)] hover:text-[oklch(0.36_0.14_152)] hover:bg-[oklch(0.92_0.06_148)] flex-1"
+                    onClick={() => {
+                      setPriceInput(Number(product.price).toString());
+                      setEditingPrice(true);
+                    }}
+                    data-ocid="product.price.edit_button"
+                  >
+                    <Pencil className="h-3 w-3 mr-1" />
+                    Edit Price
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className={`h-7 px-2 text-xs ${
+                      product.available
+                        ? "text-[oklch(0.577_0.245_27)] hover:bg-[oklch(0.577_0.245_27/0.08)]"
+                        : "text-green-700 hover:bg-green-50"
+                    }`}
+                    onClick={handleToggle}
+                    disabled={toggleAvailability.isPending}
+                    data-ocid="product.availability.toggle"
+                  >
+                    {toggleAvailability.isPending ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <ShoppingBag className="h-3 w-3 mr-1" />
+                    )}
+                    {product.available ? "Hide" : "Show"}
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 text-[oklch(0.577_0.245_27)] hover:bg-[oklch(0.577_0.245_27/0.08)]"
+                    onClick={handleRemove}
+                    disabled={removeProduct.isPending}
+                    data-ocid="product.delete_button"
+                  >
+                    {removeProduct.isPending ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-3 w-3" />
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </motion.div>

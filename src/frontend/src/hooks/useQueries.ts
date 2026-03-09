@@ -3,7 +3,7 @@ import type { Product } from "../backend.d";
 import { SAMPLE_PRODUCTS } from "../data/products";
 import { useActor } from "./useActor";
 
-const LOCAL_PRODUCTS_KEY = "balu_products_v2";
+const LOCAL_PRODUCTS_KEY = "balu_products_v3";
 
 // Persist products to localStorage
 function saveProductsLocally(products: Product[]): void {

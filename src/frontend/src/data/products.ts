@@ -305,6 +305,14 @@ export const SAMPLE_PRODUCTS = [
     description: "Flattened rice flakes for quick poha snack",
     available: true,
   },
+  {
+    id: 126n,
+    name: "Chicken Masala (100g)",
+    category: "Grocery",
+    price: 60n,
+    description: "Aromatic blend of spices for rich chicken curry",
+    available: true,
+  },
 
   // ─── Fresh Fruits ──────────────────────────────────────────────────
   {
