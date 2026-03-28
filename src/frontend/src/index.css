@@ -1,0 +1,143 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Market brand tokens */
+    --market-green: 0.4 0.14 152;
+    --market-green-light: 0.92 0.06 148;
+    --market-orange: 0.7 0.18 48;
+    --market-orange-light: 0.95 0.05 72;
+    --market-cream: 0.97 0.012 82;
+    --market-gold: 0.8 0.15 78;
+
+    /* Shadcn semantic tokens */
+    --background: 0.975 0.008 80;
+    --foreground: 0.15 0.05 50;
+
+    --card: 1 0 0;
+    --card-foreground: 0.15 0.05 50;
+
+    --popover: 1 0 0;
+    --popover-foreground: 0.15 0.05 50;
+
+    --primary: 0.4 0.14 152;
+    --primary-foreground: 1 0 0;
+
+    --secondary: 0.92 0.06 148;
+    --secondary-foreground: 0.2 0.1 152;
+
+    --muted: 0.94 0.012 82;
+    --muted-foreground: 0.5 0.03 65;
+
+    --accent: 0.92 0.06 148;
+    --accent-foreground: 0.2 0.1 152;
+
+    --destructive: 0.577 0.245 27;
+    --destructive-foreground: 1 0 0;
+
+    --border: 0.9 0.018 78;
+    --input: 0.9 0.018 78;
+    --ring: 0.4 0.14 152;
+
+    --radius: 0.75rem;
+
+    /* Chart */
+    --chart-1: 0.4 0.14 152;
+    --chart-2: 0.7 0.18 48;
+    --chart-3: 0.8 0.15 78;
+    --chart-4: 0.55 0.2 25;
+    --chart-5: 0.65 0.16 200;
+
+    /* Sidebar */
+    --sidebar: 0.97 0.008 80;
+    --sidebar-foreground: 0.15 0.05 50;
+    --sidebar-primary: 0.4 0.14 152;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.92 0.06 148;
+    --sidebar-accent-foreground: 0.2 0.1 152;
+    --sidebar-border: 0.9 0.018 78;
+    --sidebar-ring: 0.4 0.14 152;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .section-heading::after {
+    content: "";
+    display: block;
+    width: 2rem;
+    height: 3px;
+    margin-top: 0.35rem;
+    background: oklch(0.4 0.14 152);
+    border-radius: 9999px;
+  }
+}
+
+/* ── Market-specific gradient helpers ── */
+.market-gradient-hero {
+  background: linear-gradient(
+    135deg,
+    oklch(0.28 0.12 155) 0%,
+    oklch(0.38 0.15 148) 40%,
+    oklch(0.32 0.13 160) 100%
+  );
+}
+
+.market-gradient-announce {
+  background: linear-gradient(
+    90deg,
+    oklch(0.45 0.18 148) 0%,
+    oklch(0.55 0.2 152) 50%,
+    oklch(0.45 0.18 148) 100%
+  );
+}
+
+.market-texture {
+  background-image: radial-gradient(
+      circle at 20% 50%,
+      oklch(0.4 0.14 152 / 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      oklch(0.7 0.18 48 / 0.03) 0%,
+      transparent 50%
+    );
+}
+
+/* ── Marquee / Announcement scrolling ── */
+.marquee-track {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+  animation: marquee-scroll 40s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
